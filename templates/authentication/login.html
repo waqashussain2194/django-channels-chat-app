@@ -1,0 +1,43 @@
+{% extends 'chatApp/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<head>
+    
+    <link rel="stylesheet" href="{% static 'authentication/css/signupstyle.css' %}" />
+
+</head>
+
+{% if user.is_authenticated %}
+
+<h2>You are already Logged in as {{user.username}}, go to chat App Interface: </h2><a href="{% url 'chatApp-Interface' %}">Click Here</a>
+{% else %}
+<div class="signup-form" style="margin-top: 5%;">
+    <div>
+        {% for message in messages%}
+        <h3>{{message}}</h3>
+        {% endfor %}
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <h2>Log in Form</h2>
+        <p>Please fill in this form to start chatting!</p>
+        <hr>
+        
+        
+        <div class="form-group">
+            <input type="text" class="form-control" name="username" placeholder="Username" required="required">
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" name="password" placeholder="Password" required="required">
+        </div>
+        
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-lg">Log In</button>
+        </div>
+    </form>
+    <div class="hint-text">Don't Have an Account? <a style="color: blue;" href="{% url 'chatApp-register' %}">Sign in Here</a></div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'chatApp/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div align="center">
+
+    {% if user.is_authenticated %}
+    <h1>Hello, {{user.username}}</h1>
+    <h1>YOU ARE IN CHAT INTERFACE RIGHT NOW.</h1>
+
+    <h2>Click the user you want to chat with:</h2>
+    <ul>
+        {% for user in users %}
+        
+        <li><a href="{% url 'chatApp-chat' user.username %}">{{user.username}}</a></li>
+
+
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'chatApp-logout' %}">Logout</a>
+    {% else %}
+
+    <div class="hint-text">Kindly Login Before Proceeding<a style="color: blue;" href="{% url 'chatApp-login' %}">Login here</a></div>
+    {% endif %}
+</div>
+{% endblock %}

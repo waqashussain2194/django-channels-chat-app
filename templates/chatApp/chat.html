@@ -1,0 +1,75 @@
+{% extends 'chatApp/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div align="center">
+<textarea id="textArea" rows="10" cols="50" readonly></textarea><br /><br />
+    <input type="text" id="inputText" /><br /><br />
+    <button id="btnclick">Send</button>
+	<div class="hint-text">Don't wanna chat? <a style="color: blue;" href="{% url 'chatApp-logout' %}">Logout</a></div>
+</div>
+
+<script>
+
+
+
+    /*CONNECTION TO CONSUMER STARTS*/
+    var loc = window.location
+    var wsStart = 'ws://'
+    if (loc.protocol == 'https:') {
+
+        wsStart = 'wss://'
+    }
+
+    var endpoint = wsStart + window.location.host + window.location.pathname
+    var socket = new WebSocket(endpoint)
+    /*CONNECTION TO CONSUMER ENDS*/
+
+    /*VARIABLES*/
+    var textInput = document.getElementById("inputText");
+    var textArea = document.getElementById("textArea");
+    var btn = document.getElementById("btnclick");
+
+    
+
+    function sendFunc() {
+
+        
+        var message = textInput.value
+        var finalData = {
+
+            'message': message
+        }
+        socket.send(JSON.stringify(finalData))
+        textInput.value = ''
+    }
+    
+
+    /*ON MESSAGE*/
+    socket.onmessage = function (e) {
+        console.log("message", e)
+        var ReceivedData = JSON.parse(e.data)
+        
+        textArea.append(ReceivedData.username+" : "+ReceivedData.message + "\n")
+        
+    }
+
+    /*ON OPEN*/
+    socket.onopen = function btnclick(e) {
+        console.log("open", e)
+        btn.addEventListener("click", sendFunc);
+       
+    }
+    /*ON ERROR*/
+    socket.onerror = function (e) {
+        console.log("error", e)
+    }
+
+    /*ON CLOSE*/
+    socket.onclose = function (e) {
+        console.log("close", e)
+    }
+
+</script>
+{% endblock %}
